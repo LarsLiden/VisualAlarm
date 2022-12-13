@@ -4,22 +4,16 @@ namespace VisualAlarm
 
         const int FLASH_ITERATIONS = 100;
 
-        // How often to trigger the alarm in seconds
-        int frequency;
-
         // How many times has it flashed
         private int flashCount = FLASH_ITERATIONS;
 
         public ConsoleColor targetConsoleColor;
 
-        public TransientAlarm(ConsoleColor targetConsoleColor, int frequency = 10) {
+        public TransientAlarm(ConsoleColor targetConsoleColor, int frequency) {
             this.targetConsoleColor = targetConsoleColor;
-            this.frequency = frequency;
 
             // Start timer for frequency of the alarm
-           // var autoEvent = new AutoResetEvent(false);
             Timer timer = new Timer(this.StartFlash, null, 1000, (frequency * 1000));
-          //  autoEvent.WaitOne();
             ConsoleManager.AddAlarm(this);
         }
 
@@ -35,7 +29,7 @@ namespace VisualAlarm
 
             // Start the flash timer
             var flashAutoEvent = new AutoResetEvent(false);
-            Timer timer = new Timer(Flash, flashAutoEvent, 0, 20);
+            Timer timer = new Timer(Flash, flashAutoEvent, 0, 100);
             flashAutoEvent.WaitOne();
 
             // When disposed end the flash
