@@ -10,8 +10,10 @@ namespace VisualAlarm
         static void Main(string[] args)
         {
             var autoEvent = new AutoResetEvent(false);
-            var alarm = new TransientAlarm(ConsoleColor.Red, 30);
-            var alarm2 = new TransientAlarm(ConsoleColor.Yellow, 15);
+            var alarm = new TransientAlarm(ConsoleColor.Red, 60, 1);
+            var alarm2 = new TransientAlarm(ConsoleColor.Yellow, 30, 2);
+            var alarm3 = new TransientAlarm(ConsoleColor.Blue, 60, 3);
+            ConsoleManager.Start();
             autoEvent.WaitOne();
         }
     }
