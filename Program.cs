@@ -11,13 +11,13 @@ namespace VisualAlarm
         {
             AlarmSetting.LoadAlarmSettings();
 
-            ConsoleManager.Start();
+            AlarmManager.Start();
             while (true)
             {
                  // If debugging, can't read 
                 if (!System.Diagnostics.Debugger.IsAttached) {
                     Console.ReadKey();
-                    ConsoleManager.ReleaseWaitAlarm();
+                    AlarmManager.ReleaseWaitAlarm();
                 }
             }
         }

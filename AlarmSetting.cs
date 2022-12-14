@@ -31,17 +31,20 @@ namespace VisualAlarm
         public static void LoadAlarmSettings() {
             var json = File.ReadAllText("alarmSettings.json");
 
-            alarmSettings = JsonConvert.DeserializeObject<List<AlarmSetting>>(json, new StringEnumConverter());
-            if (alarmSettings == null) {
+            List<AlarmSetting>? settings = JsonConvert.DeserializeObject<List<AlarmSetting>>(json, new StringEnumConverter());
+            if (settings == null) {
                 alarmSettings = new List<AlarmSetting>();
+            }
+            else {
+                alarmSettings = settings;
             }
             
             foreach (var alarmSetting in alarmSettings) {
                 if (alarmSetting.wait) {
-                    ConsoleManager.AddAlarm(new WaitAlarm(alarmSetting));
+                    AlarmManager.AddAlarm(new WaitAlarm(alarmSetting));
                 }
                 else {
-                    ConsoleManager.AddAlarm(new TransientAlarm(alarmSetting));    
+                    AlarmManager.AddAlarm(new TransientAlarm(alarmSetting));    
                 }
             }
         }

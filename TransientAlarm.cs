@@ -28,11 +28,11 @@ namespace VisualAlarm
             var curTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             if (curTime < endFlashTime)
             {
-                if (ConsoleManager.ConsoleColor != targetConsoleColor) {
-                    ConsoleManager.ConsoleColor = targetConsoleColor;
+                if (AlarmManager.ConsoleColor != targetConsoleColor) {
+                    AlarmManager.ConsoleColor = targetConsoleColor;
                 }
                 else {
-                    ConsoleManager.ConsoleColor = offColor;
+                    AlarmManager.ConsoleColor = offColor;
                 }
             }
         }
