@@ -10,6 +10,7 @@ Edit "AlarmSetting.json" to change the alarms
 
 The sample will create two alarms.  One that flashes red every 60 seconds for one second and another that flashes yellow every 30 seconds for 2 seconds.   When multiple alarms are active at the same time it will flash between the colors of the active alarms.
 
+#### alarmSettings.json
 ```
 [
     {
