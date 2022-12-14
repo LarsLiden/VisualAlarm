@@ -1,0 +1,12 @@
+[
+    {
+        "targetConsoleColor": "Red",
+        "frequency": 60.0,
+        "duration": 1.0
+    },
+    {
+        "targetConsoleColor": "Yellow",
+        "frequency": 30.0,
+        "duration": 2.0
+    }
+]

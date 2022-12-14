@@ -8,15 +8,15 @@ namespace VisualAlarm
 
         public ConsoleColor targetConsoleColor;
 
-        public TransientAlarm(ConsoleColor targetConsoleColor, double frequency, double duration) {
-            this.targetConsoleColor = targetConsoleColor;
+        public TransientAlarm(AlarmSetting alarmSetting)  {
 
-            this.flashDuration = (int)(duration * 1000);
-            var flashFrequency = (int)(frequency * 1000);
+            this.targetConsoleColor = alarmSetting.targetConsoleColor;
+
+            this.flashDuration = (int)(alarmSetting.duration * 1000);
+            var flashFrequency = (int)(alarmSetting.frequency * 1000);
 
             // Start timer for frequency of the alarm
             Timer timer = new Timer(this.StartFlash, null, 0, flashFrequency);
-            ConsoleManager.AddAlarm(this);
         }
 
         public bool IsFlashing {
