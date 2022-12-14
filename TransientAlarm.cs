@@ -1,22 +1,13 @@
 namespace VisualAlarm 
 {
-    class TransientAlarm {
+    class TransientAlarm : Alarm {
 
         long endFlashTime;
 
         long flashDuration;
-
-        public ConsoleColor targetConsoleColor;
-
-        public TransientAlarm(AlarmSetting alarmSetting)  {
-
-            this.targetConsoleColor = alarmSetting.targetConsoleColor;
-
+        
+        public TransientAlarm(AlarmSetting alarmSetting) : base(alarmSetting.targetConsoleColor, alarmSetting.frequency) {
             this.flashDuration = (int)(alarmSetting.duration * 1000);
-            var flashFrequency = (int)(alarmSetting.frequency * 1000);
-
-            // Start timer for frequency of the alarm
-            Timer timer = new Timer(this.StartFlash, null, 0, flashFrequency);
         }
 
         public bool IsFlashing {
@@ -26,7 +17,7 @@ namespace VisualAlarm
             }
         }
 
-        private void StartFlash(Object? stateInfo) {
+        override protected void Trigger(Object? stateInfo) {
             // Reset endTime to restart flashing
             var startTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             endFlashTime = startTime + flashDuration;
