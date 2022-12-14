@@ -4,14 +4,30 @@ namespace VisualAlarm
 
         public ConsoleColor targetConsoleColor;
 
-        public Alarm(ConsoleColor targetConsoleColor, double frequency) {
+        private TimerPlus? timer;
+
+        public Alarm(ConsoleColor targetConsoleColor, double flashFrequency) {
             this.targetConsoleColor = targetConsoleColor;
-            var flashFrequency = (int)(frequency * 1000);
 
             // Start timer for frequency of the alarm
-            Timer timer = new Timer(this.Trigger, null, 0, flashFrequency);
+            timer = new TimerPlus(this.Trigger, null, 0, flashFrequency);
         }
 
         virtual protected void Trigger(Object? stateInfo) {}
+
+        private string NextTriggerTime {
+            get {
+                if (timer != null) {
+                    return timer.Next.ToString("HH:mm");;
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+
+        public string Status() {
+            return $"{targetConsoleColor} {NextTriggerTime}";
+        }
     }
 }
