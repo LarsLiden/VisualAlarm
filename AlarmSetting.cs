@@ -13,10 +13,13 @@ namespace VisualAlarm
         public double frequency;
         public double duration;
 
-        public AlarmSetting(ConsoleColor targetConsoleColor, double frequency, double duration) {
+        public bool wait;
+
+        public AlarmSetting(ConsoleColor targetConsoleColor, double frequency, double duration, bool wait = false) {
             this.targetConsoleColor = targetConsoleColor;
             this.frequency = frequency;
             this.duration = duration;
+            this.wait = wait;
             alarmSettings.Add(this);
         }
 
@@ -27,7 +30,20 @@ namespace VisualAlarm
 
         public static void LoadAlarmSettings() {
             var json = File.ReadAllText("alarmSettings.json");
+
             alarmSettings = JsonConvert.DeserializeObject<List<AlarmSetting>>(json, new StringEnumConverter());
+            if (alarmSettings == null) {
+                alarmSettings = new List<AlarmSetting>();
+            }
+            
+            foreach (var alarmSetting in alarmSettings) {
+                if (alarmSetting.wait) {
+                    ConsoleManager.AddAlarm(new WaitAlarm(alarmSetting));
+                }
+                else {
+                    ConsoleManager.AddAlarm(new TransientAlarm(alarmSetting));    
+                }
+            }
         }
     }
 }

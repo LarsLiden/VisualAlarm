@@ -7,11 +7,11 @@ namespace VisualAlarm
     {
         private static ConsoleColor _consoleColor = ConsoleColor.Black;
 
-        private static List<TransientAlarm> alarms = new List<TransientAlarm>();
+        private static List<Alarm> alarms = new List<Alarm>();
 
-        private static TransientAlarm? currentAlarm = null;
+        private static TransientAlarm? currentTransientAlarm = null;
 
-        public static void AddAlarm(TransientAlarm alarm) {
+        public static void AddAlarm(Alarm alarm) {
             alarms.Add(alarm);
         }
 
@@ -20,40 +20,74 @@ namespace VisualAlarm
             Timer timer = new Timer(Flash, null, 0, 50);
         }
 
-        private static void Flash(Object? stateInfo) {
+        private static ConsoleColor BackgroundColor {
+            get {
+                // Get transient alarms
+                var waitAlarms = alarms.OfType<WaitAlarm>();
+
+                // Get active alarms
+                var activeAlarms = waitAlarms.Where(a => a.isActive);
+
+                //  Only one alarm can be active at a time
+                if (activeAlarms.Any()) {
+                    return activeAlarms.First().targetConsoleColor;
+                }
+                return ConsoleColor.Black;
+            }
+        }
+
+        public static void ReleaseWaitAlarm() {
+            // Get transient alarms
+            var waitAlarms = alarms.OfType<WaitAlarm>();
+
             // Get active alarms
-            var activeAlarms = alarms.Where(a => a.IsFlashing);
+            var activeAlarms = waitAlarms.Where(a => a.isActive);
+
+            //  Only one alarm can be active at a time
+            if (activeAlarms.Any()) {
+                activeAlarms.First().isActive = false;
+            }
+            ConsoleColor = BackgroundColor;
+        }
+
+        private static void Flash(Object? stateInfo) {
+
+            // Get transient alarms
+            var transientAlarms = alarms.OfType<TransientAlarm>();
+
+            // Get active alarms
+            var activeAlarms = transientAlarms.Where(a => a.IsFlashing);
 
             // If no active alarms, revert to black
             if (!activeAlarms.Any()) {
-                ConsoleColor = ConsoleColor.Black;
+                ConsoleColor = BackgroundColor;
                 return;
             }
 
             TransientAlarm? previousAlarm = null;
 
             // Update the current alarm
-            if (currentAlarm == null) {
-                currentAlarm = activeAlarms.First();
+            if (currentTransientAlarm == null) {
+                currentTransientAlarm = activeAlarms.First();
             }
             else if (activeAlarms.Count() == 1) {
                 previousAlarm = null;
-                currentAlarm = activeAlarms.First();
+                currentTransientAlarm = activeAlarms.First();
             }
             else {
-                var currentIndex = activeAlarms.ToList().IndexOf(currentAlarm);
+                var currentIndex = activeAlarms.ToList().IndexOf(currentTransientAlarm);
                 if (currentIndex == activeAlarms.Count() - 1) {
-                    previousAlarm = currentAlarm;
-                    currentAlarm = activeAlarms.First();
+                    previousAlarm = currentTransientAlarm;
+                    currentTransientAlarm = activeAlarms.First();
                 }
                 else {
-                    previousAlarm = currentAlarm;
-                    currentAlarm = activeAlarms.ElementAt(currentIndex + 1);
+                    previousAlarm = currentTransientAlarm;
+                    currentTransientAlarm = activeAlarms.ElementAt(currentIndex + 1);
                 }
             }
 
-            var offColor = (previousAlarm != null) ? previousAlarm.targetConsoleColor : ConsoleColor.Black;
-            currentAlarm.Flash(offColor);
+            var offColor = (previousAlarm != null) ? previousAlarm.targetConsoleColor : BackgroundColor;
+            currentTransientAlarm.Flash(offColor);
         }
 
 
@@ -79,19 +113,6 @@ namespace VisualAlarm
                     Console.Clear();
                 }
 
-            }
-        }
-
-        public static void RevertConsoleColor(TransientAlarm alarm) {
-            var remainingAlarms = alarms.Where(a => a != alarm && a.IsFlashing );
-
-            // If any other alarms are still active, revert to the last one's color
-            if (remainingAlarms.Any()) {
-                ConsoleColor = remainingAlarms.Last().targetConsoleColor;
-            }
-            // Otherwise, revert to black
-            else {
-                ConsoleColor = ConsoleColor.Black;
             }
         }
     }

@@ -10,13 +10,16 @@ namespace VisualAlarm
         static void Main(string[] args)
         {
             AlarmSetting.LoadAlarmSettings();
-            foreach (var alarmSetting in AlarmSetting.alarmSettings) {
-                ConsoleManager.AddAlarm(new TransientAlarm(alarmSetting));
-            }
 
-            var autoEvent = new AutoResetEvent(false);
             ConsoleManager.Start();
-            autoEvent.WaitOne();
+            while (true)
+            {
+                 // If debugging, can't read 
+                if (!System.Diagnostics.Debugger.IsAttached) {
+                    Console.ReadKey();
+                    ConsoleManager.ReleaseWaitAlarm();
+                }
+            }
         }
     }
 }
